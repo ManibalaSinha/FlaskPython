@@ -2,16 +2,12 @@ from flask import Flask, jsonify, request #give code access to third party libra
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, String, Float
 import os
-from flask_marshmallow import Marshmallow
 
 app = Flask(__name__) #set to Flask Constructor, will take name from script
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + 'C:\\Users\\manib\\FlaskPython\\students.db' 
-#os.path.join(basedir, 'kidz.db')
 
 db = SQLAlchemy(app)
-ma = Marshmallow(app)#marshmallow constructor, pass as a app
-
 
 @app.cli.command('db_create')
 def db_create():
@@ -27,11 +23,12 @@ def db_drop():
 
 @app.cli.command('db_seed')
 def db_seed():
-   america = Student(student_name='erica', student_class =5, student_subject ='python', student_interest ='Flask', student_grade=1.1, student_city= 'cty')
-   africa = Student(student_name='Amca', student_class =7, student_subject ='plugin', student_interest ='api', student_grade=2.1, student_city= 'ity')
-   australia = Student(student_name='Ameca', student_class =9, student_subject ='django', student_interest ='rest', student_grade=1.3, student_city= 'cit')
-   db.session.add(africa)  
+   america = Student(student_name='America', student_class =5, student_subject ='python', student_interest ='Flask', student_grade=1.1, student_city= 'cty')
+   africa = Student(student_name='Africa', student_class =7, student_subject ='plugin', student_interest ='api', student_grade=2.1, student_city= 'ity')
+   australia = Student(student_name='Australia', student_class =9, student_subject ='django', student_interest ='rest', student_grade=1.3, student_city= 'cit')
+
    db.session.add(america) 
+   db.session.add(africa)  
    db.session.add(australia) 
 
    test_user = User(first_name='Ram', last_name='Shayam', email='user@test.com', password='password')
@@ -74,7 +71,7 @@ def url_variables(name: str, age: int):
       return jsonify(message="Welcome " + name + ", you are old enough!")
    
 @app.route('/students', methods=['GET']) #respond to GET request, method we want to accept
-def students(): # want to get all data from databse kidz
+def students(): # want to get all data from databse students
    students_list = Student.query.all()
    result = students_schema.dump(students_list)
    return jsonify(result.data)
@@ -83,10 +80,10 @@ def students(): # want to get all data from databse kidz
 #database models
 class User(db.Model):
    __tablename__ = 'users'
-   id = Column(Integer, primary_key=True)
-   first_name = Column(String)
-   last_name = Column(String)
-   email = Column(String, unique=True)
+   id = db.Column(Integer, primary_key=True)
+   first_name = db.Column(String)
+   last_name = db.Column(String)
+   email = db.Column(String, unique=True)
    password = Column(String)
 
 
@@ -100,20 +97,6 @@ class Student(db.Model):
    student_grade = Column(Float)
    student_city = Column(String)
 
-class UserSchema(ma.Schema): #inherit from Marshmallow
-   class Meta:
-      fields = ('id', 'first_name', 'last_name', 'email', 'password')
-
-class StudentSchema(ma.Schema):
-   class Meta:
-      fields = ('student_id', 'student_name', 'student_class', 'student_subject', 'student_interest', 'student_grade', 'student_city')
-
-
-user_schema = UserSchema() # 1 record back
-users_schema = UserSchema(many=True) #deserialize in single object , mutiple records back
-
-student_schema = StudentSchema()
-students_schema = StudentSchema(many=True)
 
 if __name__ == '__main__':
    app.run()
