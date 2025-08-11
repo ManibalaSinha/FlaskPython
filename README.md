@@ -1,7 +1,8 @@
 # Kidz Learning Stations - Flask API
 
-A simple Flask REST API project demonstrating basic CRUD operations and database management with SQLite, SQLAlchemy ORM, and Marshmallow serialization.
-
+A simple Flask REST API project demonstrating  CRUD operations and database management with SQLite, SQLAlchemy ORM, and Marshmallow serialization.
+Python Flask CRUD App | Build Full Stack Web App with SQLite
+https://youtu.be/6A-Et2R4lvM
 ---
 
 ## Features
